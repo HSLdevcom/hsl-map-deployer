@@ -33,3 +33,25 @@ services:
     restart: always
     ports:
     - 4000:3000
+  jore-postgis:
+    image: mdillon/postgis
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: postgres
+    expose:
+    - 5432
+  jore-graphql-import:
+    build: https://github.com/HSLdevcom/jore-graphql-import.git
+    environment:
+      PG_CONNECTION_STRING: postgres://postgres:postgres@jore-postgis:5432/postgres
+    depends_on:
+    - jore-postgis
+  jore-graphql:
+    build: https://github.com/HSLdevcom/jore-graphql.git
+    restart: always
+    environment:
+      PG_CONNECTION_STRING: postgres://postgres:postgres@jore-postgis:5432/postgres
+    depends_on:
+    - jore-postgis
+    ports:
+    - 8080:5000
