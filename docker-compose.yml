@@ -11,6 +11,8 @@ services:
   generator-server:
     build: https://github.com/HSLdevcom/hsl-map-generator-server.git
     restart: always
+    environment:
+      FONTSTACK_PASSWORD: ${FONTSTACK_PASSWORD}
     ports:
     - 8000:8000
   generator-ui:
