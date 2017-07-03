@@ -64,5 +64,5 @@ services:
     - jore-postgis
     ports:
     - 8080:5000
-  volumes:
-    output: {}
+volumes:
+  output: {}
