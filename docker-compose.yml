@@ -27,7 +27,7 @@ services:
     ports:
     - 5000:5000
     volumes:
-    - ./fonts:/fonts
+    - ./fonts:/fonts:ro
     - output:/output
   site:
     build: https://github.com/HSLdevcom/hsl-map-site.git
