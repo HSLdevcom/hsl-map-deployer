@@ -29,6 +29,11 @@ services:
     volumes:
     - ./fonts:/fonts
     - output:/output
+  site:
+    build: https://github.com/HSLdevcom/hsl-map-site.git
+    restart: always
+    ports:
+    - 5050:4000
   web-ui:
     build:
       context: https://github.com/HSLdevcom/hsl-map-web-ui.git
