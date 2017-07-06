@@ -5,7 +5,9 @@ services:
     image: nginx
     restart: always
     volumes:
-    - ./nginx.conf:/etc/nginx/nginx.conf
+    - ./nginx.conf:/etc/nginx/nginx.conf:ro
+    - ./public:/public:ro
+    - output:/output
     ports:
     - 80:80
   generator-server:
@@ -26,7 +28,13 @@ services:
     ports:
     - 5000:5000
     volumes:
-    - ./fonts:/fonts
+    - ./fonts:/fonts:ro
+    - output:/output
+  site:
+    build: https://github.com/HSLdevcom/hsl-map-site.git
+    restart: always
+    ports:
+    - 5050:4000
   web-ui:
     build:
       context: https://github.com/HSLdevcom/hsl-map-web-ui.git
@@ -57,3 +65,5 @@ services:
     - jore-postgis
     ports:
     - 8080:5000
+volumes:
+  output: {}
