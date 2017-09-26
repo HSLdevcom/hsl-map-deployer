@@ -65,5 +65,14 @@ services:
     - jore-postgis
     ports:
     - 8080:5000
+  jore-tileserver:
+    build: https://github.com/HSLdevcom/jore-tileserver.git
+    restart: always
+    environment:
+      PG_CONNECTION_STRING: postgres://postgres:postgres@jore-postgis:5432/postgres
+    depends_on:
+    - jore-postgis
+    ports:
+    - 3000:3000
 volumes:
   output: {}
