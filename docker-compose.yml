@@ -22,8 +22,19 @@ services:
     restart: always
     ports:
     - 3000:3000
+  publisher-postgres:
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: postgres
+    expose:
+    - 5432
   publisher:
     build: https://github.com/HSLdevcom/hsl-map-publisher.git
+    environment:
+      PG_CONNECTION_STRING: postgres://postgres:postgres@publisher-postgres:5432/postgres
+    depends_on:
+    - publisher-postgres
     restart: always
     ports:
     - 4000:4000
