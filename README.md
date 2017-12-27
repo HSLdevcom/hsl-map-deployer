@@ -1,11 +1,11 @@
 HSL Map Deployer
 ====================
 
-Reverse proxy and deployer for `hsl-map` and `jore-graphql` repositories.
+Reverse proxy and deployer for `hsl-map` and `jore-` repositories.
 
 ### Prerequisites
 
-Install `docker` and `docker-compose` 1.10.0+
+Install `docker` and `docker-compose` 1.13.0+
 
 Set `FONTSTACK_PASSWORD` environment variable
 
@@ -17,9 +17,8 @@ Start all services:
 docker-compose up
 ```
 
-Rebuild and restart a service:
+Restart a service:
 
 ```
-docker-compose up --build publisher
+docker-compose up publisher
 ```
-
