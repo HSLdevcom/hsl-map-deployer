@@ -69,6 +69,12 @@ services:
       PG_CONNECTION_STRING: postgres://postgres:postgres@jore-postgis:5432/postgres
     depends_on:
     - jore-postgis
+  jore-geometry-matcher:
+    image: hsldevcom/jore-geometry-matcher
+    environment:
+      PG_CONNECTION_STRING: postgres://postgres:postgres@jore-postgis:5432/postgres
+    depends_on:
+    - jore-postgis
   jore-graphql:
     image: hsldevcom/jore-graphql
     restart: always
