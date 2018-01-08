@@ -12,8 +12,6 @@ services:
   generator-server:
     image: hsldevcom/hsl-map-generator-server
     restart: always
-    environment:
-      FONTSTACK_PASSWORD: ${FONTSTACK_PASSWORD}
     expose:
     - 8000
   generator-ui:
