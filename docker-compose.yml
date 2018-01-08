@@ -14,13 +14,13 @@ services:
     restart: always
     environment:
       FONTSTACK_PASSWORD: ${FONTSTACK_PASSWORD}
-    ports:
-    - 8000:8000
+    expose:
+    - 8000
   generator-ui:
     image: hsldevcom/hsl-map-generator-ui
     restart: always
-    ports:
-    - 3000:3000
+    expose:
+    - 3000
   publisher-postgres:
     image: postgres
     restart: always
@@ -37,26 +37,26 @@ services:
     depends_on:
     - publisher-postgres
     restart: always
-    ports:
-    - 4000:4000
+    expose:
+    - 4000
     volumes:
     - ./fonts:/fonts:ro
     - ./output:/output
   publisher-ui:
     image: hsldevcom/hsl-map-publisher-ui
     restart: always
-    ports:
-    - 5000:5000
+    expose:
+    - 5000
   site:
     image: hsldevcom/hsl-map-site
     restart: always
-    ports:
-    - 5050:4000
+    expose:
+    - 4000
   web-ui:
     image: hsldevcom/hsl-map-web-ui
     restart: always
-    ports:
-    - 4000:3000
+    expose:
+    - 3000
   jore-postgis:
     image: mdillon/postgis
     restart: always
@@ -83,8 +83,8 @@ services:
       PG_CONNECTION_STRING: postgres://postgres:postgres@jore-postgis:5432/postgres
     depends_on:
     - jore-postgis
-    ports:
-    - 8080:5000
+    expose:
+    - 5000
   jore-tileserver:
     image: hsldevcom/jore-tileserver
     restart: always
@@ -92,5 +92,5 @@ services:
       PG_CONNECTION_STRING: postgres://postgres:postgres@jore-postgis:5432/postgres
     depends_on:
     - jore-postgis
-    ports:
-    - 3000:3000
+    expose:
+    - 3000
