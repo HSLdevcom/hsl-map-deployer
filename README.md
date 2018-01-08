@@ -11,6 +11,8 @@ Copy `Gotham Rounded` and `Gotham XNarrow` OpenType fonts to the `fonts` directo
 
 Extract `fontstack.zip` to the `public` directory
 
+Create `postgres` directory
+
 ### Run
 
 Start database and import data:
