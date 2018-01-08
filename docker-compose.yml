@@ -39,6 +39,7 @@ services:
     restart: always
     expose:
     - 4000
+    shm_size: '1gb'
     volumes:
     - ./fonts:/fonts:ro
     - ./output:/output
