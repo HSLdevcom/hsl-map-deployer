@@ -23,9 +23,31 @@ docker-compose up jore-graphql-import
 docker-compose up jore-geometry-matcher
 ```
 
-Deploy latest version:
+Start services:
+
+```
+docker-compose up -d proxy
+docker-compose up -d jore-graphql
+docker-compose up -d jore-tileserver
+docker-compose up -d publisher
+docker-compose up -d publisher-ui
+docker-compose up -d generator-server
+docker-compose up -d generator-ui
+docker-compose up -d web-ui
+docker-compose up -d site
+```
+
+### Update
+
+Deploy latest image:
 
 ```
 docker-compose pull [service]
 docker-compose up -d [service]
+```
+
+Import latest data:
+
+```
+docker-compose up jore-graphql-import && docker-compose up jore-geometry-matcher
 ```
