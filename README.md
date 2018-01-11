@@ -1,25 +1,53 @@
 HSL Map Deployer
 ====================
 
-Reverse proxy and deployer for `hsl-map` and `jore-graphql` repositories.
+Reverse proxy and deployer for `hsl-map` and `jore-` repositories.
 
 ### Prerequisites
 
-Install `docker` and `docker-compose` 1.10.0+
+Install `docker` and `docker-compose` 1.13.0+
 
-Set `FONTSTACK_PASSWORD` environment variable
+Copy `Gotham Rounded` and `Gotham XNarrow` OpenType fonts to the `fonts` directory
+
+Extract `fontstack.zip` to the `public` directory
+
+Create `postgres` directory
 
 ### Run
 
-Start all services:
+Start database and import data:
 
 ```
-docker-compose up
+docker-compose up -d jore-postgis
+docker-compose up jore-graphql-import
+docker-compose up jore-geometry-matcher
 ```
 
-Rebuild and restart a service:
+Start services:
 
 ```
-docker-compose up --build publisher
+docker-compose up -d proxy
+docker-compose up -d jore-graphql
+docker-compose up -d jore-tileserver
+docker-compose up -d publisher
+docker-compose up -d publisher-ui
+docker-compose up -d generator-server
+docker-compose up -d generator-ui
+docker-compose up -d web-ui
+docker-compose up -d site
 ```
 
+### Update
+
+Deploy latest image:
+
+```
+docker-compose pull [service]
+docker-compose up -d [service]
+```
+
+Import latest data:
+
+```
+docker-compose up jore-graphql-import && docker-compose up jore-geometry-matcher
+```

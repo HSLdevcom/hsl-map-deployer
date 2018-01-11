@@ -7,50 +7,55 @@ services:
     volumes:
     - ./nginx.conf:/etc/nginx/nginx.conf:ro
     - ./public:/public:ro
-    - output:/output
     ports:
     - 80:80
   generator-server:
-    build: https://github.com/HSLdevcom/hsl-map-generator-server.git
+    image: hsldevcom/hsl-map-generator-server
+    restart: always
+    expose:
+    - 8000
+  generator-ui:
+    image: hsldevcom/hsl-map-generator-ui
+    restart: always
+    expose:
+    - 3000
+  publisher-postgres:
+    image: postgres
     restart: always
     environment:
-      FONTSTACK_PASSWORD: ${FONTSTACK_PASSWORD}
-    ports:
-    - 8000:8000
-  generator-ui:
-    build: https://github.com/HSLdevcom/hsl-map-generator-ui.git
-    restart: always
-    ports:
-    - 3000:3000
+      POSTGRES_PASSWORD: postgres
+    expose:
+    - 5432
+    volumes:
+    - ./postgres:/var/lib/postgresql/data
   publisher:
-    build: https://github.com/HSLdevcom/hsl-map-publisher.git
+    image: hsldevcom/hsl-map-publisher
+    environment:
+      PG_CONNECTION_STRING: postgres://postgres:postgres@publisher-postgres:5432/postgres
+    depends_on:
+    - publisher-postgres
     restart: always
-    ports:
-    - 4000:4000
+    expose:
+    - 4000
+    shm_size: '1gb'
     volumes:
     - ./fonts:/fonts:ro
-    - output:/output
+    - ./output:/output
   publisher-ui:
-    build:
-      context: https://github.com/HSLdevcom/hsl-map-publisher-ui.git
-      args:
-        API_URL: /julkaisin-api
+    image: hsldevcom/hsl-map-publisher-ui
     restart: always
-    ports:
-    - 5000:5000
+    expose:
+    - 5000
   site:
-    build: https://github.com/HSLdevcom/hsl-map-site.git
+    image: hsldevcom/hsl-map-site
     restart: always
-    ports:
-    - 5050:4000
+    expose:
+    - 4000
   web-ui:
-    build:
-      context: https://github.com/HSLdevcom/hsl-map-web-ui.git
-      args:
-        ROOT_PATH: /kuljettaja
+    image: hsldevcom/hsl-map-web-ui
     restart: always
-    ports:
-    - 4000:3000
+    expose:
+    - 3000
   jore-postgis:
     image: mdillon/postgis
     restart: always
@@ -59,28 +64,32 @@ services:
     expose:
     - 5432
   jore-graphql-import:
-    build: https://github.com/HSLdevcom/jore-graphql-import.git
+    image: hsldevcom/jore-graphql-import
+    environment:
+      PG_CONNECTION_STRING: postgres://postgres:postgres@jore-postgis:5432/postgres
+    depends_on:
+    - jore-postgis
+  jore-geometry-matcher:
+    image: hsldevcom/jore-geometry-matcher
     environment:
       PG_CONNECTION_STRING: postgres://postgres:postgres@jore-postgis:5432/postgres
     depends_on:
     - jore-postgis
   jore-graphql:
-    build: https://github.com/HSLdevcom/jore-graphql.git
+    image: hsldevcom/jore-graphql
     restart: always
     environment:
       PG_CONNECTION_STRING: postgres://postgres:postgres@jore-postgis:5432/postgres
     depends_on:
     - jore-postgis
-    ports:
-    - 8080:5000
+    expose:
+    - 5000
   jore-tileserver:
-    build: https://github.com/HSLdevcom/jore-tileserver.git
+    image: hsldevcom/jore-tileserver
     restart: always
     environment:
       PG_CONNECTION_STRING: postgres://postgres:postgres@jore-postgis:5432/postgres
     depends_on:
     - jore-postgis
-    ports:
-    - 3000:3000
-volumes:
-  output: {}
+    expose:
+    - 3000
