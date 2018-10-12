@@ -68,6 +68,13 @@ services:
       POSTGRES_PASSWORD: postgres
     expose:
     - 5432
+  jore-postgis-i2:
+    image: mdillon/postgis
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: postgres
+    expose:
+    - 5432
   jore-graphql-import:
     image: hsldevcom/jore-graphql-import
     environment:
@@ -94,6 +101,24 @@ services:
     restart: always
     environment:
       PG_CONNECTION_STRING: postgres://postgres:postgres@jore-postgis:5432/postgres
+    depends_on:
+    - jore-postgis
+    expose:
+    - 3000
+  jore-graphql-i2:
+    image: hsldevcom/jore-graphql
+    restart: always
+    environment:
+      PG_CONNECTION_STRING: postgres://postgres:postgres@jore-postgis-i2:5432/postgres
+    depends_on:
+    - jore-postgis
+    expose:
+    - 5000
+  jore-tileserver-i2:
+    image: hsldevcom/jore-tileserver
+    restart: always
+    environment:
+      PG_CONNECTION_STRING: postgres://postgres:postgres@jore-postgis-i2:5432/postgres
     depends_on:
     - jore-postgis
     expose:
