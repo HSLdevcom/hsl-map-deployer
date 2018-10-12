@@ -26,8 +26,7 @@ Start database and import data:
 
 ```
 docker-compose up -d jore-postgis
-docker-compose up jore-graphql-import
-docker-compose up jore-geometry-matcher
+./run-import.sh
 ```
 
 Start services:
