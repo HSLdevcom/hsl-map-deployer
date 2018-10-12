@@ -13,14 +13,20 @@ Extract `fontstack.zip` to the `public` directory
 
 Create `postgres` directory
 
+Set FTP_USERNAME and FTP_PASSWORD environment variables using:
+
+export FTP_USERNAME=myusername
+export FTP_PASSWORD=mysecretpassword
+
+These values are automatically exported to jore-graphql-import at runtime.
+
 ### Run
 
 Start database and import data:
 
 ```
 docker-compose up -d jore-postgis
-docker-compose up jore-graphql-import
-docker-compose up jore-geometry-matcher
+./run-import.sh
 ```
 
 Start services:
