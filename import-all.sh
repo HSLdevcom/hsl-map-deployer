@@ -21,9 +21,9 @@ docker-compose up -d jore-tileserver
 
 echo Done with instance 1
 
-echo Sleeping for 20 minutes
+echo Sleeping for 35 minutes
 
-sleep 20m
+sleep 35m
 
 echo Stopping instance 3 dependencies
 
