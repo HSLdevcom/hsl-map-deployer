@@ -119,7 +119,7 @@ services:
     environment:
       PG_CONNECTION_STRING: postgres://postgres:postgres@jore-postgis-i2:5432/postgres
     depends_on:
-    - jore-postgis
+    - jore-postgis-i2
     expose:
     - 5000
   jore-tileserver-i2:
