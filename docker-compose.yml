@@ -82,8 +82,6 @@ services:
     image: hsldevcom/jore-graphql-import
     environment:
       PG_CONNECTION_STRING: postgres://postgres:postgres@jore-postgis:5432/postgres
-    volumes:
-      - ./downloads:/tmp/build
     environment:
       - USERNAME=${FTP_USERNAME}
       - PASSWORD=${FTP_PASSWORD}

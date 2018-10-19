@@ -16,7 +16,7 @@ fi
 echo Postgis connection string is set to $CONNECTION_STRING
 
 echo Launching importer
-docker-compose run -e PG_CONNECTION_STRING=$CONNECTION_STRING -v ${VOLUME}:/tmp/build jore-graphql-import
+docker-compose run -e PG_CONNECTION_STRING=$CONNECTION_STRING -v $VOLUME:/tmp/build jore-graphql-import
 echo Launching geometry matcher
 docker-compose run -e PG_CONNECTION_STRING=$CONNECTION_STRING jore-geometry-matcher
 echo Remove old containers
