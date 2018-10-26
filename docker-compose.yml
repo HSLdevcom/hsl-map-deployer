@@ -32,8 +32,10 @@ services:
     image: hsldevcom/hsl-map-publisher
     environment:
       PG_CONNECTION_STRING: postgres://postgres:postgres@publisher-postgres:5432/postgres
+      PG_JORE_CONNECTION_STRING: postgres://postgres:postgres@jore-postgis:5432/postgres
     depends_on:
     - publisher-postgres
+    - jore-postgis
     restart: always
     expose:
     - 4000
