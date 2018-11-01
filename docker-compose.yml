@@ -7,8 +7,11 @@ services:
     volumes:
     - ./nginx.conf:/etc/nginx/nginx.conf:ro
     - ./public:/public:ro
+    - ./fullchain.pem:/etc/certificates/fullchain.pem:ro
+    - ./privkey.pem:/etc/certificates/privkey.pem:ro
     ports:
     - 80:80
+    - 443:443
   generator-server:
     image: hsldevcom/hsl-map-generator-server
     restart: always
@@ -70,12 +73,17 @@ services:
       POSTGRES_PASSWORD: postgres
     expose:
     - 5432
+  jore-postgis-i2:
+    image: mdillon/postgis
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: postgres
+    expose:
+    - 5432
   jore-graphql-import:
     image: hsldevcom/jore-graphql-import
     environment:
       PG_CONNECTION_STRING: postgres://postgres:postgres@jore-postgis:5432/postgres
-    volumes:
-      - ./downloads:/tmp/build
     environment:
       - USERNAME=${FTP_USERNAME}
       - PASSWORD=${FTP_PASSWORD}
@@ -101,6 +109,24 @@ services:
     restart: always
     environment:
       PG_CONNECTION_STRING: postgres://postgres:postgres@jore-postgis:5432/postgres
+    depends_on:
+    - jore-postgis
+    expose:
+    - 3000
+  jore-graphql-i2:
+    image: hsldevcom/jore-graphql
+    restart: always
+    environment:
+      PG_CONNECTION_STRING: postgres://postgres:postgres@jore-postgis-i2:5432/postgres
+    depends_on:
+    - jore-postgis-i2
+    expose:
+    - 5000
+  jore-tileserver-i2:
+    image: hsldevcom/jore-tileserver
+    restart: always
+    environment:
+      PG_CONNECTION_STRING: postgres://postgres:postgres@jore-postgis-i2:5432/postgres
     depends_on:
     - jore-postgis
     expose:
