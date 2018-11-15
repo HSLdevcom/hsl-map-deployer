@@ -47,7 +47,7 @@ services:
     shm_size: '1gb'
     volumes:
     - ./fonts:/fonts:ro
-    - ./output-output:/output
+    - ./routemap-output:/output
   publisher-postgres:
     image: postgres
     restart: always
@@ -58,7 +58,7 @@ services:
     volumes:
     - ./postgres:/var/lib/postgresql/data
   publisher:
-    image: joakimkronqvist/hsl-map-publisher
+    image: hsldevcom/hsl-map-publisher
     environment:
       PG_CONNECTION_STRING: postgres://postgres:postgres@publisher-postgres:5432/postgres
     depends_on:

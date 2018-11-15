@@ -14,7 +14,7 @@ echo Running instance 1 import
 
 ./run-import.sh 1
 
-echo Startint instance 1 dependencies
+echo Starting instance 1 dependencies
 
 docker-compose up -d jore-graphql
 docker-compose up -d jore-tileserver
@@ -36,7 +36,7 @@ echo Running instance 2
 
 ./run-import.sh 2
 
-echo Startint instance 2 dependencies
+echo Starting instance 2 dependencies
 
 docker-compose up -d jore-graphql-i2
 docker-compose up -d jore-tileserver-i2
