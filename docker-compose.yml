@@ -44,7 +44,7 @@ services:
     restart: always
     expose:
     - 4000
-    shm_size: '1gb'
+    shm_size: '10gb'
     volumes:
     - ./fonts:/fonts:ro
     - ./routemap-output:/output
@@ -155,3 +155,57 @@ services:
     - jore-postgis
     expose:
     - 3000
+  jore-history-postgis:
+    image: mdillon/postgis
+    restart: always
+    volumes:
+      - jore_history_postgis:/var/lib/postgresql/data
+    environment:
+      POSTGRES_PASSWORD: postgres
+  jore-history-graphql-import:
+    image: hsldevcom/jore-history-graphql-import
+    environment:
+      FETCH_DIR: jorehistory
+      USERNAME: ${FTP_USERNAME}
+      PASSWORD: ${FTP_PASSWORD}
+      PG_CONNECTION_STRING: postgres://postgres:postgres@jore-history-postgis:5432/postgres
+    depends_on:
+      - jore-history-postgis
+    volumes:
+      - import_tmp:/tmp/build
+      - import_data:/opt/jore/data
+  jore-history-graphql:
+    image: hsldevcom/jore-history-graphql
+    restart: always
+    environment:
+      PG_CONNECTION_STRING: postgres://postgres:postgres@jore-history-postgis:5432/postgres
+    depends_on:
+      - jore-history-postgis
+    expose:
+      - 5000
+  jore-history-hasura:
+    image: hasura/graphql-engine:latest
+    restart: always
+    environment:
+      - HASURA_GRAPHQL_DATABASE_URL=postgres://postgres:postgres@jore-history-postgis:5432/postgres
+    command:
+      - graphql-engine
+      - serve
+      - --enable-console
+    depends_on:
+      - jore-history-postgis
+    expose:
+      - 8080
+  map-reports:
+    image: hsldevcom/hsl-map-reports
+    restart: always
+    environment:
+      BASE_URL: /map-reports
+      API_URL: http://dev-kartat.hsldev.com/map-reports-api/
+    expose:
+    - 4000
+    - 1234
+volumes:
+  jore_history_postgis:
+  import_data:
+  import_tmp:
