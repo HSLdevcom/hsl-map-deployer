@@ -181,8 +181,6 @@ services:
       PG_CONNECTION_STRING: postgres://postgres:postgres@jore-history-postgis:5432/postgres
     depends_on:
       - jore-history-postgis
-    command:
-      - --body-size-limit 100mb
     expose:
       - 5000
   jore-history-hasura:
