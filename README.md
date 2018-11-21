@@ -1,5 +1,4 @@
-HSL Map Deployer
-====================
+# HSL Map Deployer
 
 Reverse proxy and deployer for `hsl-map` and `jore-` repositories.
 
@@ -37,6 +36,7 @@ docker-compose up -d jore-graphql
 docker-compose up -d jore-tileserver
 docker-compose up -d publisher
 docker-compose up -d publisher-ui
+docker-compose up -d routemap
 docker-compose up -d generator-server
 docker-compose up -d generator-ui
 docker-compose up -d web-ui
