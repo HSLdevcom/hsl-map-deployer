@@ -40,7 +40,7 @@ services:
     shm_size: '1gb'
     volumes:
     - ./fonts:/fonts:ro
-    - ./output:/output
+    - /srv/map/posters:/output
   publisher-ui:
     image: hsldevcom/hsl-map-publisher-ui
     restart: always
@@ -78,7 +78,7 @@ services:
       - USERNAME=${FTP_USERNAME}
       - PASSWORD=${FTP_PASSWORD}
     depends_on:
-    - jore-postgis
+      - jore-postgis
   jore-geometry-matcher:
     image: hsldevcom/jore-geometry-matcher
     environment:
