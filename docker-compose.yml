@@ -7,8 +7,11 @@ services:
     volumes:
     - ./nginx.conf:/etc/nginx/nginx.conf:ro
     - ./public:/public:ro
+#    - ./fullchain.pem:/etc/certificates/fullchain.pem:ro
+#    - ./privkey.pem:/etc/certificates/privkey.pem:ro
     ports:
     - 80:80
+#    - 443:443
   generator-server:
     image: hsldevcom/hsl-map-generator-server
     restart: always
@@ -19,6 +22,32 @@ services:
     restart: always
     expose:
     - 3000
+  routemap-postgres:
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: postgres
+    expose:
+    - 5432
+    volumes:
+    - ./routemap-postgres:/var/lib/postgresql/data
+  routemap:
+    image: hsldevcom/hsl-routemap-server
+    environment:
+      PG_CONNECTION_STRING: postgres://postgres:postgres@routemap-postgres:5432/postgres
+      PG_JORE_CONNECTION_STRING: postgres://postgres:postgres@jore-postgis:5432/postgres
+      PG_JORE_CONNECTION_STRING_i2: postgres://postgres:postgres@jore-postgis-i2:5432/postgres
+    depends_on:
+    - routemap-postgres
+    - jore-postgis
+    - jore-postgis-i2
+    restart: always
+    expose:
+    - 4000
+    shm_size: '10gb'
+    volumes:
+    - ./fonts:/fonts:ro
+    - ./routemap-output:/output
   publisher-postgres:
     image: postgres
     restart: always
@@ -31,6 +60,7 @@ services:
   publisher:
     image: hsldevcom/hsl-map-publisher
     environment:
+      API_URL: http://kartat.hsl.fi
       PG_CONNECTION_STRING: postgres://postgres:postgres@publisher-postgres:5432/postgres
     depends_on:
     - publisher-postgres
@@ -68,12 +98,17 @@ services:
       POSTGRES_PASSWORD: postgres
     expose:
     - 5432
+  jore-postgis-i2:
+    image: mdillon/postgis
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: postgres
+    expose:
+    - 5432
   jore-graphql-import:
     image: hsldevcom/jore-graphql-import
     environment:
       PG_CONNECTION_STRING: postgres://postgres:postgres@jore-postgis:5432/postgres
-    volumes:
-      - ./downloads:/tmp/build
     environment:
       - USERNAME=${FTP_USERNAME}
       - PASSWORD=${FTP_PASSWORD}
@@ -103,3 +138,72 @@ services:
     - jore-postgis
     expose:
     - 3000
+  jore-graphql-i2:
+    image: hsldevcom/jore-graphql
+    restart: always
+    environment:
+      PG_CONNECTION_STRING: postgres://postgres:postgres@jore-postgis-i2:5432/postgres
+    depends_on:
+    - jore-postgis-i2
+    expose:
+    - 5000
+  jore-tileserver-i2:
+    image: hsldevcom/jore-tileserver
+    restart: always
+    environment:
+      PG_CONNECTION_STRING: postgres://postgres:postgres@jore-postgis-i2:5432/postgres
+    depends_on:
+    - jore-postgis
+    expose:
+    - 3000
+  jore-history-postgis:
+    image: mdillon/postgis
+    restart: always
+    volumes:
+      - jore_history_postgis:/var/lib/postgresql/data
+    environment:
+      POSTGRES_PASSWORD: postgres
+  jore-history-graphql-import:
+    image: hsldevcom/jore-history-graphql-import
+    environment:
+      PG_CONNECTION_STRING: postgres://postgres:postgres@jore-history-postgis:5432/postgres
+    depends_on:
+      - jore-history-postgis
+    volumes:
+      - import_tmp:/tmp/build
+      - import_data:/opt/jore/data
+  jore-history-graphql:
+    image: hsldevcom/jore-history-graphql
+    restart: always
+    environment:
+      PG_CONNECTION_STRING: postgres://postgres:postgres@jore-history-postgis:5432/postgres
+    depends_on:
+      - jore-history-postgis
+    expose:
+      - 5000
+  jore-history-hasura:
+    image: hasura/graphql-engine:latest
+    restart: always
+    environment:
+      - HASURA_GRAPHQL_DATABASE_URL=postgres://postgres:postgres@jore-history-postgis:5432/postgres
+    command:
+      - graphql-engine
+      - serve
+      - --enable-console
+    depends_on:
+      - jore-history-postgis
+    expose:
+      - 8080
+  map-reports:
+    image: hsldevcom/hsl-map-reports
+    restart: always
+    environment:
+      BASE_URL: /map-reports
+      API_URL: http://dev-kartat.hsldev.com/map-reports-api/
+    expose:
+    - 4000
+    - 1234
+volumes:
+  jore_history_postgis:
+  import_data:
+  import_tmp:
