@@ -60,6 +60,7 @@ services:
   publisher:
     image: hsldevcom/hsl-map-publisher
     environment:
+      API_URL: http://kartat.hsl.fi
       PG_CONNECTION_STRING: postgres://postgres:postgres@publisher-postgres:5432/postgres
     depends_on:
     - publisher-postgres
@@ -165,9 +166,6 @@ services:
   jore-history-graphql-import:
     image: hsldevcom/jore-history-graphql-import
     environment:
-      FETCH_DIR: jorehistory
-      USERNAME: ${FTP_USERNAME}
-      PASSWORD: ${FTP_PASSWORD}
       PG_CONNECTION_STRING: postgres://postgres:postgres@jore-history-postgis:5432/postgres
     depends_on:
       - jore-history-postgis
