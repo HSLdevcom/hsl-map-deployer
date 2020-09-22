@@ -1,4 +1,5 @@
 # HSL Map Deployer
+> :warning: **Deprecated as Map project use Docker Swarm and Azure**: Could be updated to run a dev environment
 
 Reverse proxy and deployer for `hsl-map` and `jore-` repositories.
 
