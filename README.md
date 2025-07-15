@@ -1,6 +1,7 @@
 # HSL Map Deployer
-> :warning: **Deprecated as Map project use Docker Swarm and Azure**: Could be updated to run a dev environment
+# ⚠️ ARCHIVED
 
+This repository is archived and read-only. For active development, go to [HSL Map Production](https://github.com/HSLdevcom/hsl-map-documentation).
 Reverse proxy and deployer for `hsl-map` and `jore-` repositories.
 
 ### Prerequisites
